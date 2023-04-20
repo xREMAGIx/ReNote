@@ -1,0 +1,187 @@
+---
+sidebar_position: 7
+---
+
+# Counter CRDTs
+
+A Counter is a replicated integer supporting operations increment and decrement to update it, and value to query it. The semantics should be is that the value converge towards the global number of increments minus the number of decrements. (Extension to operations for adding and subtracting an argument is straightforward.)
+
+A Counter CRDT is useful in many peer-to-peer applications, for instance counting the number of currently logged-in users.
+
+## State-based increment-only Counter (Growing-only Counter: G-Counter)
+
+### Scenario
+
+For instance to count the number of clicks on a link in a P2P-replicated web page, or a P2P "I Like It/I Don't Like It" poll, as is common in social networks, or it could be a page view counter.
+
+### Case study
+
+Suppose the payload was a single integer and merge computes max. This data type is a CvRDT as its states form a monotonic semilattice. Consider two replicas, with the same initial state of 0; at each one, a client originates increment. They converge to 1 instead of the expected 2.
+
+Suppose instead the payload is an integer and merge adds the two values. This is not a CvRDT, as merge is not idempotent.
+
+### Example code
+
+```typescript
+type GCounter = Map<ReplicaId, number>;
+
+const zero: GCounter = new Map<ReplicaId, number>();
+
+function value(c: GCounter): number {
+  let result = 0;
+  for (const [, v] of c) {
+    result += v;
+  }
+  return result;
+}
+
+function inc(r: ReplicaId, c: GCounter): GCounter {
+  const current = c.get(r) ?? 0;
+  const updated = current + 1;
+  return c.set(r, updated);
+}
+
+function merge(a: GCounter, b: GCounter): GCounter {
+  const merged = new Map<ReplicaId, number>();
+  for (const [ka, va] of a) {
+    const vb = b.get(ka);
+    if (vb !== undefined) {
+      merged.set(ka, Math.max(va, vb));
+    } else {
+      merged.set(ka, va);
+    }
+  }
+  for (const [kb, vb] of b) {
+    if (!merged.has(kb)) {
+      merged.set(kb, vb);
+    }
+  }
+  return merged;
+}
+```
+
+**How the code works:**
+
+1.  The `GCounter` module defines a type `GCounter` which is a map of `ReplicaId` to `int64` values. It also defines a `zero` value of type `GCounter`, which is an empty map.
+
+2.  The `value` function takes a `GCounter` and returns the sum of all the values in the map.
+
+3.  The `inc` function takes a `ReplicaId` and a `GCounter`, and increments the value associated with that `ReplicaId` in the map. If the `ReplicaId` is not already in the map, it adds it with a value of 1.
+
+4.  The `merge` function takes two `GCounter` maps and returns a new `GCounter` map that merges the two inputs. It does this by iterating over each key-value pair in the first map (`a`), and updating the value in the second map (`b`) if the key already exists in `b`, or adding the key-value pair to `b` if it doesn't already exist. The value for the key is the maximum of the values from the two maps.
+
+**For Example:**
+
+If we have two `GCounter` maps:
+
+```
+a = {"replica1": 3, "replica2": 2, "replica3": 1}
+b = {"replica1": 2, "replica2": 3, "replica4": 1}
+```
+
+When we call `merge a b`, we get the following result:
+
+```
+{"replica1": 3, "replica2": 3, "replica3": 1, "replica4": 1}
+```
+
+Here, the value for `"replica1"` is 3 because it is the maximum of 3 in `a` and 2 in `b`. The value for `"replica2"` is 3 because it is the maximum of 2 in `a` and 3 in `b`. The values for `"replica3"` and `"replica4"` are simply copied from `a` and `b`, respectively, since they only exist in one of the maps.
+
+## Increment/decrement Counter (Positive-Negative Counters: PN-Counter)
+
+### Scenario
+
+For instance, to count the number of users logged in to a P2P application such as Skype. To avoid excessively large vectors, only super-peers would replicate the counter. Due to asynchrony, the count may diverge temporarily from its true value, but it will eventually be exact.
+
+### Case study
+
+It is not straightforward to support `decrement` with the previous representation, because this operation would violate monotonicity of the semilattice. Furthermore, since `merge` is a max operation, decrement would have no effect.
+
+Our solution, PN-Counter basically combines two G-Counters. Its payload consists of two vectors: `P` to register `increments`, and `N` for `decrements`. Its value is the difference between the two corresponding G-Counters, its partial order is the conjunction of the corresponding partial orders, and `merge` merges the two vectors.
+
+### Example code
+
+```typescript
+import { GCounter } from "./GCounter";
+
+export type PNCounter = [GCounter, GCounter];
+
+export const zero: PNCounter = [GCounter.zero, GCounter.zero];
+
+export const value = ([inc, dec]: PNCounter): number => {
+  return GCounter.value(inc) - GCounter.value(dec);
+};
+
+export const inc = (replica: string, [inc, dec]: PNCounter): PNCounter => {
+  return [GCounter.inc(replica, inc), dec];
+};
+
+export const dec = (replica: string, [inc, dec]: PNCounter): PNCounter => {
+  return [inc, GCounter.inc(replica, dec)];
+};
+
+export const merge = (
+  [inc1, dec1]: PNCounter,
+  [inc2, dec2]: PNCounter
+): PNCounter => {
+  return [GCounter.merge(inc1, inc2), GCounter.merge(dec1, dec2)];
+};
+```
+
+**How the code works:**
+
+1.  First, we define a type `PNCounter` that is a tuple of two GCounters (`GCounter.GCounter * GCounter.GCounter`).
+
+2.  We define a `zero` value for `PNCounter`, which is a tuple of two empty GCounters.
+
+3.  We define a `value` function that takes a PNCounter and returns the difference between the value of the first GCounter and the value of the second GCounter.
+
+4.  We define an `inc` function that takes a replica and a PNCounter, and returns a new PNCounter with the replica's count incremented in the first GCounter.
+
+5.  We define a `dec` function that takes a replica and a PNCounter, and returns a new PNCounter with the replica's count incremented in the second GCounter.
+
+6.  We define a `merge` function that takes two PNCounters and returns a new PNCounter with the merged values of the two input PNCounters. This is done by merging the first GCounters together and merging the second GCounters together separately.
+
+**For Example:**
+
+Sure, let's say you have a PNCounter with two replicas: "Replica1" and "Replica2". Initially, the PNCounter is set to zero, so the value of the PNCounter is 0.
+
+```
+let pnCounter: PNCounter = PNCounter.zero;
+```
+
+Now, let's increment the counter by 1 on "Replica1":
+
+```
+pnCounter = PNCounter.inc("Replica1", pnCounter);
+```
+
+The PNCounter is now `(GCounter { Replica1 => 1 }, GCounter {})`, because we incremented the `inc` counter on "Replica1" by 1.
+
+Let's decrement the counter by 1 on "Replica2":
+
+```
+pnCounter = PNCounter.dec("Replica2", pnCounter);
+```
+
+The PNCounter is now `(GCounter { Replica1 => 1 }, GCounter { Replica2 => 1 })`, because we incremented the `dec` counter on "Replica2" by 1.
+
+If we calculate the value of the PNCounter using PNCounter.value(pnCounter), we get `-1`. This is because we decremented the counter once and didn't increment it again, so the current value is `-1`.
+
+Now let's merge two PNCounters from different replicas:
+
+```
+let pnCounter1: PNCounter = PNCounter.zero;
+pnCounter1 = PNCounter.inc("Replica1", pnCounter1);
+pnCounter1 = PNCounter.inc("Replica1", pnCounter1);
+pnCounter1 = PNCounter.inc("Replica2", pnCounter1);
+let pnCounter2: PNCounter = PNCounter.zero;
+pnCounter2 = PNCounter.inc("Replica2", pnCounter2);
+pnCounter2 = PNCounter.inc("Replica2", pnCounter2);
+pnCounter2 = PNCounter.inc("Replica1", pnCounter2);
+let merged = PNCounter.merge(pnCounter1, pnCounter2);
+```
+
+`pnCounter1` is `(GCounter { Replica1 => 2, Replica2 => 1 }, GCounter {})`. `pnCounter2` is `(GCounter { Replica2 => 2, Replica1 => 1 }, GCounter {})`. `merged` is `(GCounter { Replica1 => 2, Replica2 => 2 }, GCounter {})`.
+
+As you can see, the `inc` and `dec` counters are merged independently. So in the `merged` PNCounter, the `inc` counter for "Replica1" is 2 (because "Replica1" incremented twice in `pnCounter1` and once in `pnCounter2`), the `inc` counter for "Replica2" is 2 (because "Replica2" incremented twice in `pnCounter2` and once in `pnCounter1`), and the `dec` counters are both zero, because neither replica decremented the counter. If we calculate the value of the `merged` PNCounter using `PNCounter.value(merged)`, we get 4.
