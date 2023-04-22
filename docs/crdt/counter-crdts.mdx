@@ -14,11 +14,13 @@ A Counter CRDT is useful in many peer-to-peer applications, for instance countin
 
 For instance to count the number of clicks on a link in a P2P-replicated web page, or a P2P "I Like It/I Don't Like It" poll, as is common in social networks, or it could be a page view counter.
 
-### Case study
+:::note
 
 Suppose the payload was a single integer and merge computes max. This data type is a CvRDT as its states form a monotonic semilattice. Consider two replicas, with the same initial state of 0; at each one, a client originates increment. They converge to 1 instead of the expected 2.
 
 Suppose instead the payload is an integer and merge adds the two values. This is not a CvRDT, as merge is not idempotent.
+
+:::
 
 ### Example code
 
@@ -70,7 +72,7 @@ function merge(a: GCounter, b: GCounter): GCounter {
 
 4.  The `merge` function takes two `GCounter` maps and returns a new `GCounter` map that merges the two inputs. It does this by iterating over each key-value pair in the first map (`a`), and updating the value in the second map (`b`) if the key already exists in `b`, or adding the key-value pair to `b` if it doesn't already exist. The value for the key is the maximum of the values from the two maps.
 
-**For Example:**
+### Sample scenario
 
 If we have two `GCounter` maps:
 
@@ -93,11 +95,13 @@ Here, the value for `"replica1"` is 3 because it is the maximum of 3 in `a` and 
 
 For instance, to count the number of users logged in to a P2P application such as Skype. To avoid excessively large vectors, only super-peers would replicate the counter. Due to asynchrony, the count may diverge temporarily from its true value, but it will eventually be exact.
 
-### Case study
+:::note
 
 It is not straightforward to support `decrement` with the previous representation, because this operation would violate monotonicity of the semilattice. Furthermore, since `merge` is a max operation, decrement would have no effect.
 
 Our solution, PN-Counter basically combines two G-Counters. Its payload consists of two vectors: `P` to register `increments`, and `N` for `decrements`. Its value is the difference between the two corresponding G-Counters, its partial order is the conjunction of the corresponding partial orders, and `merge` merges the two vectors.
+
+:::
 
 ### Example code
 
@@ -142,7 +146,7 @@ export const merge = (
 
 6.  We define a `merge` function that takes two PNCounters and returns a new PNCounter with the merged values of the two input PNCounters. This is done by merging the first GCounters together and merging the second GCounters together separately.
 
-**For Example:**
+### Sample scenario
 
 Sure, let's say you have a PNCounter with two replicas: "Replica1" and "Replica2". Initially, the PNCounter is set to zero, so the value of the PNCounter is 0.
 
