@@ -6,6 +6,11 @@ sidebar_position: 8
 
 ## Last-Writer-Win Register (LWW Register)
 
+![LWW Register](./img/lwwRegisterStateBased.png)
+Integer LWW Register (state-based)
+
+Ref: [A comprehensive study of Convergent and Commutative Replicated Data Types](https://inria.hal.science/inria-00555588/document)
+
 ### Scenario
 
 Last write wins is a popular way of dealing with conflicts being the result of concurrent updates in many systems (Cassandra is good example of a database that's quite known from this approach).
@@ -122,7 +127,12 @@ Here's a sample:
 
 6. When Bob attempts to save his changes to Section A again, the Last-Write-Wins Register CRDT resolves the conflict and ensures that Alice's latest changes win. Bob's changes are discarded, and the Last-Write-Wins Register for Section A is updated with Alice's latest changes.
 
-# Multi Value Register (MV Register)
+## Multi Value Register (MV Register)
+
+![MV Register](./img/mvRegisterStateBased.png)
+MV Register (state-based)
+
+Ref: [A comprehensive study of Convergent and Commutative Replicated Data Types](https://inria.hal.science/inria-00555588/document)
 
 ### Example code
 

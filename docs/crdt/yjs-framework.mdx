@@ -1,0 +1,65 @@
+# Yjs Framework
+
+Yjs is a CRDT implementation that exposes its internal data structure as shared types. Shared types are common data types like Map or Array with superpowers: changes are automatically distributed to other peers and merged without merge conflicts.
+
+Yjs is network agnostic (p2p!), supports many existing rich text editors, offline editing, version snapshots, undo/redo and shared cursors. It scales well with an unlimited number of users and is well suited for even large documents.
+
+[Yjs - Github](https://github.com/yjs/yjs)
+
+## Dots
+
+We'll use a separate sequencer for every replica and use pair of (replica-id, sequence-nr) (also known as dot) to represent a timestamp of a particular operation made on that replica
+
+1.  It allows us to uniquely identify every single operation made on any replica.
+
+2.  It allows us to track causal relations between events - so while we may not be able to set a total order of events (fortunately we don't need it), we still know how to order operations made by a single replica.
+
+3.  Unlike standard time, for every operation we increase sequence number by one. This way we can keep track of "holes" - a discontinuous events we haven't yet observed for some reason.
+
+We're used to represent observed events using markers on some sort of a timeline, like this:
+
+![Dot](./img/dot.png)
+
+With **dots** we can represent them using 2-dimensional space instead
+
+Each filled cell represents a discrete event we observed, described as a dot. As you can see, most of the events form a continuous surface, only few ones are detached. This reflects a real life situation, since as we replicate our updates among replicas, each replica will try to keep up with incoming changes, filling the gaps it was not aware of before, thus over time filling the space from left to right
+
+![Dots](./img/dots.png)
+
+Ref: [CRDT optimization](https://www.bartoszsypytkowski.com/optimizing-state-based-crdts-part-2/)
+
+## Interleaving
+
+## YATA algorithm (Yet Another Transformation Approach)
+
+:::note
+
+Below information is based on what I have learned and it is referenced to this blog [Delta-state CRDTs: indexed sequences with YATA](https://www.bartoszsypytkowski.com/yata/)
+
+For more information, please read this paper: [YATA paper](https://www.researchgate.net/publication/310212186_Near_Real-Time_Peer-to-Peer_Shared_Editing_on_Extensible_Data_Types)
+
+:::
+
+### Meta data
+
+Our core unit of composition is `Block` type. We can simply represent a Yata collection in terms of array, where blocks are laid out in their read order
+
+![YATA Metadata](./img/yataMetadata.png)
+
+- `id`: unique block identifier
+- `originLeft`: left neighbor at moment of original insertion
+- `originRight`: right neighbor at moment of original insertion
+- `value`: value stored in a block, None if tombstoned
+- `isDeleted`; delete flag, true if tombstoned
+
+### Insertion
+
+With Insert operation, first we need to map user defined index in to actual index inside our YATA collection
+
+![YATA Insertion 1](./img/yataInsertion1.png)
+
+Then we obtain IDs of its neighbors (if they exist)
+
+![YATA Insertion 2](./img/yataInsertion2.png)
+
+### Deletion

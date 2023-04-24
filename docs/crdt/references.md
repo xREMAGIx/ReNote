@@ -30,4 +30,10 @@ Operations f and g commute, if for any reachable replica state S where the
 
 [Conflict-free Replicated Data Types](https://inria.hal.science/inria-00609399v1/document)
 
+[Near Real-Time Peer-to-Peer Shared Editing on Extensible Data Types](https://www.researchgate.net/publication/310212186_Near_Real-Time_Peer-to-Peer_Shared_Editing_on_Extensible_Data_Types)
+
+## Blogs
+
 [An introduction to state-based CRDTs](https://www.bartoszsypytkowski.com/the-state-of-a-state-based-crdts/)
+
+[CRDT: Conflict-free Replicated Data Types](https://medium.com/@amberovsky/crdt-conflict-free-replicated-data-types-b4bfc8459d26)
