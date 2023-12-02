@@ -19,7 +19,7 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'xREMAGIx', // Usually your GitHub org/user name.
-  projectName: 'ReNote', // Usually your repo name.
+  projectName: 'renote', // Usually your repo name.
   trailingSlash: false,
 
   onBrokenLinks: 'throw',
