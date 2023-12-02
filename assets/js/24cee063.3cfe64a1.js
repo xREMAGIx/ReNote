@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkrenote=self.webpackChunkrenote||[]).push([[4995],{8765:e=>{e.exports=JSON.parse('{"label":"hello","permalink":"/renote/blog/tags/hello","allTagsPath":"/renote/blog/tags","count":2,"unlisted":false}')}}]);
