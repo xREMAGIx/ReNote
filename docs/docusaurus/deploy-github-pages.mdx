@@ -1,0 +1,148 @@
+# Deploy to GitHub Pages
+
+:::info
+
+From my experience deploy this site (Docusaurus v3) to GitHub Pages, I will note some steps here.
+
+For more information, please reference to official link: [Docusaurus-Deploy to GitHub Pages](https://docusaurus.io/docs/deployment#deploying-to-github-pages)
+
+:::
+
+### docusaurus.config.js settings
+
+First, modify your docusaurus.config.js and changes the following params:
+
+- **url**: your github pages url
+- **baseUrl**: your github pages repo name
+- **projectName**: your github pages repo name
+- **organizationName**: your github username
+
+:::warning
+
+GitHub Pages adds a trailing slash to Docusaurus URLs by default. It is recommended to set a trailingSlash config (true or false, not undefined).
+
+:::
+
+For example:
+
+```js
+export default {
+  // ...
+  url: "https://xremagix.github.io",
+  baseUrl: "/renote/",
+  projectName: "renote",
+  organizationName: "xREMAGIx",
+  trailingSlash: false,
+  // ...
+};
+```
+
+### Deploy
+
+:::note
+
+By default, Docusaurus uses HTTPS to deploy to GitHub Pages. Since Github change from password to **personal access token (PAT)**, you need to create a personal access token and use it as password when deploy.
+More information: [GitHub-Create a personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+
+So for convinience, I use SSH to deploy to GitHub Pages. By setting `USE_SSH=true`, Docusaurus will use SSH to deploy.
+
+:::
+
+```bash
+GIT_USER=<GITHUB_USERNAME> USE_SSH=true yarn deploy
+```
+
+For example:
+
+```bash
+GIT_USER=xREMAGIx USE_SSH=true yarn deploy
+```
+
+### Triggering deployment with GitHub Actions
+
+:::info
+
+My source repo and deployment repo are the **same** repository.
+
+For more information: [GitHub-Triggering deployment with GitHub Actions](https://docusaurus.io/docs/deployment#triggering-deployment-with-github-actions)
+
+:::
+
+1. Create a new file named `.github/workflows/deploy.yml` with the following content:
+
+```yml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    # Review gh actions docs if you want to further define triggers, paths, etc
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build website
+        run: yarn build
+
+      # Popular action to deploy to GitHub Pages:
+      # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Build output to publish to the `gh-pages` branch:
+          publish_dir: ./build
+          # The following lines assign commit authorship to the official
+          # GH-Actions bot for deploys to `gh-pages` branch:
+          # https://github.com/actions/checkout/issues/13#issuecomment-724415212
+          # The GH actions bot is used by default if you didn't specify the two fields.
+          # You can swap them out with your own user credentials.
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+```
+
+2. Create a new file named `.github/workflows/test-deploy.yml` with the following content:
+
+```yml
+name: Test deployment
+
+on:
+  pull_request:
+    branches:
+      - main
+    # Review gh actions docs if you want to further define triggers, paths, etc
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+
+jobs:
+  test-deploy:
+    name: Test deployment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Test build website
+        run: yarn build
+```
+
+3. Commit and push the changes to your repository.
