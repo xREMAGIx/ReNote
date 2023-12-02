@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-crdt/register-crdts" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">Register CRDTs | ReNote</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://xremagix.renote.github.io/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://xremagix.renote.github.io/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://xremagix.renote.github.io/docs/crdt/register-crdts"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Register CRDTs | ReNote"><meta data-rh="true" name="description" content="Last-Writer-Win Register (LWW Register)"><meta data-rh="true" property="og:description" content="Last-Writer-Win Register (LWW Register)"><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://xremagix.renote.github.io/docs/crdt/register-crdts"><link data-rh="true" rel="alternate" href="https://xremagix.renote.github.io/docs/crdt/register-crdts" hreflang="en"><link data-rh="true" rel="alternate" href="https://xremagix.renote.github.io/docs/crdt/register-crdts" hreflang="x-default"><link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="ReNote RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="ReNote Atom Feed"><link rel="stylesheet" href="/assets/css/styles.0b6ebd38.css">
+<script src="/assets/js/runtime~main.12a0162a.js" defer="defer"></script>
+<script src="/assets/js/main.b0bf1ea1.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/logo.svg" alt="My Site Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/logo.svg" alt="My Site Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">ReNote</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/docs/intro">Tutorial</a><a class="navbar__item navbar__link" href="/blog">Blog</a></div><div class="navbar__items navbar__items--right"><a href="https://github.com/facebook/docusaurus" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/intro">Tutorial Intro</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/tutorial---basics">Tutorial - Basics</a><button aria-label="Expand sidebar category &#x27;Tutorial - Basics&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/tutorial---extras">Tutorial - Extras</a><button aria-label="Expand sidebar category &#x27;Tutorial - Extras&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/docs/category/crdt">CRDT</a><button aria-label="Collapse sidebar category &#x27;CRDT&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/crdt/definition">Definition</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/crdt/objects-and-operations">Objects and Operations</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/crdt/state-based-crdt">State-based Convergent Replicated Data Type (CvRDT)</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/crdt/op-based-crdt">Operation-based Commutative Replicated Data Type (CmRDT)</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/crdt/relation-cvrdt-cmrdt">Relation between CvRDT and CmRDT</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/crdt/types-of-crdt">Types Of CRDT</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/crdt/counter-crdts">Counter CRDTs</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/docs/crdt/register-crdts">Register CRDTs</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/crdt/set-crdts">Set CRDTs</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/crdt/references">References</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/crdt/yjs-framework">Yjs Framework</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/markdown">Markdown</a><button aria-label="Expand sidebar category &#x27;Markdown&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/docs/category/webrtc">WebRTC</a><button aria-label="Expand sidebar category &#x27;WebRTC&#x27;" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/docs/category/crdt"><span itemprop="name">CRDT</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">Register CRDTs</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><h1 id="register-crdts">Register CRDTs</h1>
+<h2 id="last-writer-win-register-lww-register">Last-Writer-Win Register (LWW Register)</h2>
+<p><img alt="LWW Register" src="/assets/images/lwwRegisterStateBased-085584d9a22eb3b40a670d295d214186.png" width="956" height="349">
+Integer LWW Register (state-based)</p>
+<p>Ref: <a href="https://inria.hal.science/inria-00555588/document">A comprehensive study of Convergent and Commutative Replicated Data Types</a></p>
+<h3 id="scenario">Scenario</h3>
+<p>Last write wins is a popular way of dealing with conflicts being the result of concurrent updates in many systems (Cassandra is good example of a database that&#x27;s quite known from this approach).</p>
+<admonition type="warning"><p>One of the issues of last-write-wins approach is its inherent risk of data loss - we took an easy to use API at price of automatically throwing out potentially useful data.</p></admonition>
+<h3 id="example-code">Example code</h3>
+<pre><code class="language-typescript">type Timestamp = [timestamp: Date, replicaId: string];
+
+type LWWRegister&lt;T&gt; = {
+  Timestamp: Timestamp;
+  Value: T | null;
+};
+
+type Operation&lt;T&gt; = [dateTime: Date, value: T | null];
+
+type Endpoint&lt;T&gt; = CRDT.Endpoint&lt;
+  LWWRegister&lt;T&gt;,
+  T | null,
+  T | null,
+  Operation&lt;T&gt;
+&gt;;
+
+const crdt: CRDT.Crdt&lt;
+  LWWRegister&lt;unknown&gt;,
+  unknown | null,
+  unknown | null,
+  Operation&lt;unknown&gt;
+&gt; = {
+  Default: {
+    Timestamp: [new Date(-8640000000000000), &quot;&quot;],
+    Value: null,
+  },
+  Query: (crdt) =&gt; crdt.Value,
+  Prepare: (_, value) =&gt; [new Date(), value],
+  Effect: (existing, e) =&gt; {
+    const [at, value] = e.Data;
+    const timestamp: Timestamp = [at, e.Origin];
+    if (existing.Timestamp &lt; timestamp) {
+      return { Timestamp: timestamp, Value: value };
+    } else {
+      return existing;
+    }
+  },
+};
+
+const props = &lt;T&gt;(db: CRDT.Database, replica: string, ctx: CRDT.ActorContext) =&gt;
+  CRDT.replicator(crdt, db, replica, ctx);
+
+const update = async &lt;T&gt;(
+  value: T | null,
+  ref: Endpoint&lt;T&gt;
+): Promise&lt;T | null&gt; =&gt; {
+  const command: CRDT.Command&lt;Operation&lt;T&gt;&gt; = [&quot;&quot;, [new Date(), value]];
+  const result = await ref(command);
+  return result;
+};
+
+const query = async &lt;T&gt;(ref: Endpoint&lt;T&gt;): Promise&lt;T | null&gt; =&gt; {
+  const result = await ref(CRDT.Query);
+  return result;
+};
+</code></pre>
+<p><strong>How the code works:</strong></p>
+<ol>
+<li>
+<p>First, the code defines a type <code>Timestamp</code> that represents a tuple of a <code>Date</code> object and a <code>string</code> that represents the replica ID. This type is used to order updates from different replicas.</p>
+</li>
+<li>
+<p>The code then defines a type <code>LWWRegister&lt;T&gt;</code> that represents a Last-Write-Wins Register. It consists of a <code>Timestamp</code> and a <code>Value</code> of type <code>T | null</code>. The <code>Timestamp</code> represents the last time the register was updated, and the <code>Value</code> represents the value of the register.</p>
+</li>
+<li>
+<p>The code also defines a type <code>Operation&lt;T&gt;</code> that represents a tuple of a <code>Date</code> object and a <code>Value</code> of type <code>T | null</code>. This is used to represent update operations on the register.</p>
+</li>
+<li>
+<p>The code defines a type <code>Endpoint&lt;T&gt;</code> that represents a CRDT endpoint for an LWWRegister of type <code>T</code>. This type is defined using the <code>CRDT.Endpoint</code> type provided by the CRDT library.</p>
+</li>
+<li>
+<p>The code then defines a constant <code>crdt</code> that is an instance of the CRDT type. It implements the <code>Default</code>, <code>Query</code>, <code>Prepare</code>, and <code>Effect</code> methods of the CRDT interface.</p>
+</li>
+<li>
+<p>The <code>Default</code> method returns a default value for the register, which is a timestamp of the earliest possible time and an empty string for the replica ID, and a <code>null</code> value.</p>
+</li>
+<li>
+<p>The <code>Query</code> method simply returns the current value of the register.</p>
+</li>
+<li>
+<p>The <code>Prepare</code> method takes a timestamp and a value, and returns them as a tuple representing an update operation.</p>
+</li>
+<li>
+<p>The <code>Effect</code> method takes the existing state of the register and an update operation, and returns the new state of the register. It compares the timestamps of the existing state and the update operation, and returns the state with the more recent timestamp and value.</p>
+</li>
+<li>
+<p>The <code>props</code> function takes a database, a replica ID, and an actor context, and returns a replicator function for the LWWRegister.</p>
+</li>
+<li>
+<p>The <code>update</code> function takes a value and an endpoint reference, and returns a promise that resolves to the updated value of the register. It creates a command object that represents the update operation, sends the command to the endpoint, and waits for the response.</p>
+</li>
+<li>
+<p>The <code>query</code> function takes an endpoint reference, and returns a promise that resolves to the current value of the register. It sends a query command to the endpoint and waits for the response.</p>
+</li>
+</ol>
+<h3 id="sample-scenario">Sample scenario</h3>
+<p>Let&#x27;s say you&#x27;re building a real-time collaborative document editing application, where multiple users can edit the same document simultaneously. In this application, you need to maintain a Last-Write-Wins Register CRDT to keep track of the last modification made to each section of the document.</p>
+<p>In this case, you can represent each section of the document as a key-value pair, where the key is the section ID and the value is a Last-Write-Wins Register that keeps track of the last modification made to that section. When a user wants to make a modification to a section of the document, you can use the Last-Write-Wins Register CRDT to ensure that the latest modification wins.</p>
+<p>Here&#x27;s a sample:</p>
+<ol>
+<li>
+<p>Alice and Bob are working on the same document simultaneously. Alice is editing Section A, while Bob is editing Section B.</p>
+</li>
+<li>
+<p>Alice finishes editing Section A and saves her changes. The Last-Write-Wins Register for Section A is updated with Alice&#x27;s changes.</p>
+</li>
+<li>
+<p>Bob finishes editing Section B and saves his changes. The Last-Write-Wins Register for Section B is updated with Bob&#x27;s changes.</p>
+</li>
+<li>
+<p>Bob realizes that he needs to make some changes to Section A, which Alice had already edited earlier. Bob retrieves the current value of the Last-Write-Wins Register for Section A and sees Alice&#x27;s changes.</p>
+</li>
+<li>
+<p>Bob makes his changes to Section A and attempts to save them. However, before Bob&#x27;s changes can be saved, Alice makes some additional changes to Section A and saves them. The Last-Write-Wins Register for Section A is updated with Alice&#x27;s latest changes.</p>
+</li>
+<li>
+<p>When Bob attempts to save his changes to Section A again, the Last-Write-Wins Register CRDT resolves the conflict and ensures that Alice&#x27;s latest changes win. Bob&#x27;s changes are discarded, and the Last-Write-Wins Register for Section A is updated with Alice&#x27;s latest changes.</p>
+</li>
+</ol>
+<h2 id="multi-value-register-mv-register">Multi Value Register (MV Register)</h2>
+<p><img alt="MV Register" src="/assets/images/mvRegisterStateBased-906cbab0edd093f612ed9ab62eea6f82.png" width="926" height="249">
+MV Register (state-based)</p>
+<p>Ref: <a href="https://inria.hal.science/inria-00555588/document">A comprehensive study of Convergent and Commutative Replicated Data Types</a></p>
+<h3 id="example-code-1">Example code</h3>
+<pre><code class="language-typescript">type Change = {
+  user: string;
+  text: string;
+};
+
+type DocVersion = {
+  timestamp: Date;
+  changes: Change[];
+};
+
+type MVRegister = DocVersion[];
+
+type Endpoint = CRDT.Endpoint&lt;MVRegister, DocVersion[], DocVersion[], Change&gt;;
+
+const crdt: CRDT.Crdt&lt;MVRegister, DocVersion[], DocVersion[], Change&gt; = {
+  Default: [],
+  Query: (crdt) =&gt; crdt.flatMap((v) =&gt; v.changes),
+  Prepare: (_, value) =&gt; [{ timestamp: new Date(), changes: [value] }],
+  Effect: (existing, e) =&gt; {
+    const newVersion: DocVersion = {
+      timestamp: new Date(),
+      changes: [...existing[existing.length - 1].changes, e],
+    };
+    return [...existing, newVersion];
+  },
+};
+
+const props = (db: CRDT.Database, replica: string, ctx: CRDT.ActorContext) =&gt;
+  CRDT.replicator(crdt, db, replica, ctx);
+
+const update = async (change: Change, ref: Endpoint): Promise&lt;DocVersion[]&gt; =&gt; {
+  const command: CRDT.Command&lt;Change&gt; = [&quot;&quot;, change];
+  const result = await ref(command);
+  return result;
+};
+
+const query = async (ref: Endpoint): Promise&lt;Change[]&gt; =&gt; {
+  const result = await ref(CRDT.Query);
+  return result;
+};
+</code></pre>
+<p>** How code work **</p>
+<ol>
+<li>
+<p>Define the <code>MVRegister</code> type alias which represents a list of tuples containing a version timestamp and an optional value of type <code>T</code>. This is the actual CRDT data structure that we&#x27;ll be manipulating.</p>
+</li>
+<li>
+<p>Define the <code>Endpoint</code> type alias which represents the client&#x27;s view of the CRDT. It is essentially a wrapper around the CRDT operations, providing a simplified interface for clients to interact with.</p>
+</li>
+<li>
+<p>Define the <code>crdt</code> constant which contains the implementation of the CRDT. It is an object literal that implements the <code>Crdt</code> interface. It defines the <code>Default</code> member which returns an empty <code>MVRegister</code>, the <code>Query</code> member which returns a list of non-null values in the CRDT, the <code>Prepare</code> member which simply returns the given value as-is, and the <code>Effect</code> member which merges the given event with the existing CRDT state.</p>
+</li>
+<li>
+<p>Define the <code>props</code> function which creates a new CRDT endpoint using the given database, replica ID, and actor context. It does this by calling the <code>replicator</code> function with the <code>crdt</code> object and the given parameters.</p>
+</li>
+<li>
+<p>Define the <code>update</code> function which updates the CRDT with the given value by creating a new command with the value and sending it to the endpoint. It returns a promise that resolves with the updated value.</p>
+</li>
+<li>
+<p>Define the <code>query</code> function which retrieves the current state of the CRDT by sending a <code>Query</code> command to the endpoint. It returns a promise that resolves with the list of non-null values in the CRDT.</p>
+</li>
+</ol></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/xREMAGIx/renote/tree/main/docs/crdt/register-crdts.mdx" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/crdt/counter-crdts"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Counter CRDTs</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/crdt/set-crdts"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Set CRDTs</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#last-writer-win-register-lww-register" class="table-of-contents__link toc-highlight">Last-Writer-Win Register (LWW Register)</a><ul><li><a href="#scenario" class="table-of-contents__link toc-highlight">Scenario</a></li><li><a href="#example-code" class="table-of-contents__link toc-highlight">Example code</a></li><li><a href="#sample-scenario" class="table-of-contents__link toc-highlight">Sample scenario</a></li></ul></li><li><a href="#multi-value-register-mv-register" class="table-of-contents__link toc-highlight">Multi Value Register (MV Register)</a><ul><li><a href="#example-code-1" class="table-of-contents__link toc-highlight">Example code</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/docs/intro">Tutorial</a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://stackoverflow.com/questions/tagged/docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://discordapp.com/invite/docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/blog">Blog</a></li><li class="footer__item"><a href="https://github.com/facebook/docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2023 ReNote. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>
