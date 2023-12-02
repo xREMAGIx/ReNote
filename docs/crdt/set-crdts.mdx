@@ -10,7 +10,7 @@ In a Set CRDT, each replica maintains a set of elements, and updates are propaga
 
 Sets constitute one of the most basic data structures. Containers, Maps, and Graphs are all based on Sets.
 
-Operations add and remove are applied sequentially as they arrive. Initially, the set is empty. Replica 1 adds element a, then removes a; its state is again empty. Replica 2 adds the same element a; when Replica 1 applies this operation, its (final) state becomes {a}. Replica 3 receives the two add operations; the second one has no effect since a is already in the set. Then it receives the remove, which makes its state empty. Both Replica 1 and Replica 3 have applied all operations in causal order, yet they diverge.
+Operations add and remove are applied sequentially as they arrive. Initially, the set is empty. Replica 1 adds element a, then removes a; its state is again empty. Replica 2 adds the same element a; when Replica 1 applies this operation, its (final) state becomes 'a'. Replica 3 receives the two add operations; the second one has no effect since a is already in the set. Then it receives the remove, which makes its state empty. Both Replica 1 and Replica 3 have applied all operations in causal order, yet they diverge.
 
 Ref: [A comprehensive study of Convergent and Commutative Replicated Data Types](https://inria.hal.science/inria-00555588/document)
 
