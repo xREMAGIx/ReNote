@@ -39,6 +39,10 @@ export default {
 
 ### Deploy
 
+```bash
+GIT_USER=<GITHUB_USERNAME> yarn deploy
+```
+
 :::note
 
 By default, Docusaurus uses HTTPS to deploy to GitHub Pages. Since Github change from password to **personal access token (PAT)**, you need to create a personal access token and use it as password when deploy.
@@ -49,13 +53,13 @@ So for convinience, I use SSH to deploy to GitHub Pages. By setting `USE_SSH=tru
 :::
 
 ```bash
-GIT_USER=<GITHUB_USERNAME> USE_SSH=true yarn deploy
+USE_SSH=true yarn deploy
 ```
 
 For example:
 
 ```bash
-GIT_USER=xREMAGIx USE_SSH=true yarn deploy
+USE_SSH=true yarn deploy
 ```
 
 ### Triggering deployment with GitHub Actions
