@@ -1,0 +1,136 @@
+# SSH
+
+:::info
+
+More info about SSH can be found [here](https://www.ssh.com/ssh/).
+
+[GitHub SSH](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh).
+
+:::
+
+### Generating a new SSH key
+
+1. Open Git Bash.
+
+2. Paste the text below, substituting in your GitHub email address.
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+
+3. When you're prompted to "Enter a file in which to save the key," press Enter. This accepts the default file location.
+
+```bash
+Enter a file in which to save the key (/Users/YOU/.ssh/id_ALGORITHM): [Press enter]
+```
+
+4. At the prompt, type a secure passphrase. For more information, see "[Working with SSH key passphrases](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases)".
+
+```bash
+Enter passphrase (empty for no passphrase): [Type a passphrase]
+Enter same passphrase again: [Type passphrase again]
+```
+
+### Adding your SSH key to the ssh-agent
+
+1. Start the ssh-agent in the background.
+
+```bash
+eval "$(ssh-agent -s)"
+```
+
+```
+> Agent pid 59566
+```
+
+2. If you're using macOS Sierra 10.12.2 or later, you will need to modify your `~/.ssh/config` file to automatically load keys into the ssh-agent and store passphrases in your keychain.
+
+- First, check to see if your ~/.ssh/config file exists in the default location.
+
+```bash
+open ~/.ssh/config
+```
+
+```
+> The file /Users/YOU/.ssh/config does not exist.
+```
+
+- If the file doesn't exist, create the file.
+
+```bash
+touch ~/.ssh/config
+```
+
+- Open your `~/.ssh/config` file, then modify it to contain the following lines.
+
+Open:
+
+```bash
+nano ~/.ssh/config
+```
+
+Modify:
+
+```bash
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+```
+
+3. Add your SSH private key to the ssh-agent and store your passphrase in the keychain.
+
+```bash
+ssh-add -K ~/.ssh/id_ed25519
+```
+
+### Switching remote URLs from HTTPS to SSH
+
+1. Open Terminal.
+
+2. Change the current working directory to your local project.
+
+3. List your existing remotes in order to get the name of the remote you want to change.
+
+```bash
+git remote -v
+```
+
+```
+> origin https://github.com/OWNER/REPOSITORY.git (fetch)
+> origin https://github.com/OWNER/REPOSITORY.git (push)
+```
+
+4. Change your remote's URL from HTTPS to SSH with the `git remote set-url` command.
+
+```bash
+
+git remote set-url origin git@github.com:OWNER/REPOSITORY.git
+
+```
+
+5. Verify that the remote URL has changed.
+
+```bash
+git remote -v
+```
+
+```
+# Verify new remote URL
+> origin  git@github.com:OWNER/REPOSITORY.git (fetch)
+> origin  git@github.com:OWNER/REPOSITORY.git (push)
+```
+
+### Testing your SSH connection
+
+1. Open Terminal.
+
+2. Enter the following:
+
+```bash
+ssh -T it@github.com
+```
+
+```
+> Hi username! You've successfully authenticated, but GitHub does not provide shell access.
+```

@@ -18,7 +18,7 @@ Resource: [WebRTC connectivity - MDN](https://developer.mozilla.org/en-US/docs/W
 
 WebRTC can't create connections without some sort of server in the middle. We call this the **signal channel** or **signaling service**
 
-The information we need to exchange is the <Highlight color="#f87030">Offer</Highlight> and <Highlight color="#30c4f8">Answer</Highlight> which just contains the [**SDP**](/docs/webrtc/webrtc-protocols#sdp---session-description-protocol)
+The information we need to exchange is the <Highlight color="#f87030">Offer</Highlight> and <Highlight color="#30c4f8">Answer</Highlight> which just contains the [**SDP**](/docs/webrtc/protocols#sdp---session-description-protocol)
 
 :::note
 
@@ -49,7 +49,7 @@ call.
 
 The configuration of an endpoint on a WebRTC connection is called a **session description**.
 
-The description includes information about the kind of media being sent, its format, the transfer protocol being used, the endpoint's IP address and port, and other information needed to describe a media transfer endpoint. This information is exchanged and stored using [**SDP**](/docs/webrtc/webrtc-protocols#sdp---session-description-protocol)
+The description includes information about the kind of media being sent, its format, the transfer protocol being used, the endpoint's IP address and port, and other information needed to describe a media transfer endpoint. This information is exchanged and stored using [**SDP**](/docs/webrtc/protocols#sdp---session-description-protocol)
 
 When a user starts a WebRTC call to another user, the caller create an <Highlight color="#f87030">Offer</Highlight>. The recipient then responds with an <Highlight color="#30c4f8">Answer</Highlight>. In this way, both devices share with one another the information needed in order to exchange media data.
 
