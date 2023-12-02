@@ -4,6 +4,10 @@ sidebar_position: 9
 
 # Set CRDTs
 
+Set CRDTs (Conflict-free Replicated Data Types) are a type of data structure that allows multiple replicas to converge to the same state without the need for coordination or consensus.
+
+In a Set CRDT, each replica maintains a set of elements, and updates are propagated to other replicas to achieve convergence. Set CRDTs can be used in distributed systems to provide consistent and reliable access to shared data.
+
 Sets constitute one of the most basic data structures. Containers, Maps, and Graphs are all based on Sets.
 
 Operations add and remove are applied sequentially as they arrive. Initially, the set is empty. Replica 1 adds element a, then removes a; its state is again empty. Replica 2 adds the same element a; when Replica 1 applies this operation, its (final) state becomes {a}. Replica 3 receives the two add operations; the second one has no effect since a is already in the set. Then it receives the remove, which makes its state empty. Both Replica 1 and Replica 3 have applied all operations in causal order, yet they diverge.
@@ -17,6 +21,16 @@ A very simple solution — to disallow rmv() operation at all. add() operations 
 Illustrate G-Set:
 
 ![G Set](./img/gSet.png)
+
+### Overview
+
+A Grow-Only Set (G-Set) is a type of Conflict-Free Replicated Data Type (CRDT) that can be used to implement a set that can only grow, but never shrink. In other words, elements can be added to the set, but once added, they cannot be removed.
+
+G-Sets work by maintaining a set of unique identifiers that represent the elements in the set. When an element is added to the set, it is assigned a unique identifier. The set of identifiers is then replicated to all replicas, and each replica can independently determine which elements are in the set based on the set of identifiers.
+
+One of the key benefits of G-Sets is that they are simple and easy to implement. They do not require complex merging or conflict resolution algorithms, since all replicas simply maintain a copy of the set of identifiers.
+
+The G-Set has the same downside as the Grow-Only Set, which is that it grows indefinitely and cannot be explicitly deleted. Once an element is added to the set, it cannot be removed. This can lead to a situation where the set becomes too large to be stored efficiently, especially in a distributed system where the set is replicated across multiple nodes. Additionally, since G-Set does not track removals, there is no way to prevent the same element from being added to the set multiple times, which may not be desirable in some use cases.
 
 ### Example code
 
@@ -66,6 +80,18 @@ Allows rmv() operation but you can't re-add an element after its deletion. An ad
 Illustrate 2P-Set:
 
 ![2P Set](./img/2pSet.png)
+
+### Overview
+
+Two-Phase Set (2P-Set) is a type of Set CRDT that addresses the limitations of the G-Set CRDT by adding a remove operation. Like the G-Set, it is a grow-only set, which means that elements can only be added to the set and never removed. However, unlike the G-Set, it adds an additional set to keep track of elements that have been removed from the original set.
+
+The 2P-Set maintains two sets - an "add set" and a "remove set". When an element is added to the set, it is added to the "add set". When an element is to be removed from the set, instead of actually removing it, it is added to the "remove set". This allows the 2P-Set to keep track of the elements that were removed, without actually removing them from the set.
+
+One of the key benefits of the 2P-Set is that it is monotonic, meaning that it is guaranteed to only grow in size and never shrink. Additionally, the remove operation is idempotent, meaning that adding an element to the remove set multiple times has the same effect as adding it only once. This ensures that concurrent removal operations don't interfere with each other.
+
+The main downside of 2P-Set is that it is not able to remove elements once they have been added to the set. This means that if a client erroneously adds an element to the set, there is no way to remove it, even if other clients haven't added it yet. Additionally, if a client adds an element to the set and then removes it, they cannot add it back again, even if other clients haven't removed it yet. This limitation can be problematic for some use cases, as it may lead to inconsistencies or inaccuracies in the data.
+
+To overcome this limitation, other set CRDTs have been developed that allow for the removal of elements, such as the OR-Set (Observed-Remove Set) and the 3P-Set (Three-Phase Set).
 
 ### Example code
 
@@ -160,6 +186,18 @@ Idea is to introduce a total order on a set. For example, generating timestamps.
 add() adds (element, unique_id()) to the add-set, rmv() adds to the remove-set. lookup() checks where the id is greater — in add-set or rmv-set.
 
 ![LWW Set](./img/lwwSet.png)
+
+### Overview
+
+The Last Write Wins Element Set (LWW-Element-Set) is a type of Set CRDT that allows the addition and removal of elements in a distributed system. Similar to the LWW-Register, LWW-Element-Set resolves conflicts by comparing timestamps.
+
+Each element in the set is associated with a timestamp indicating the time of its last addition or removal. The set tracks the additions and removals of elements by maintaining two internal sets, an "add set" and a "remove set", that contain the added and removed elements respectively.
+
+When adding an element to the set, it is added to the "add set" with the current timestamp. When removing an element, it is added to the "remove set" with the current timestamp.
+
+To determine if an element is currently in the set, the set checks if the element is in the "add set" and not in the "remove set", or if the element is in both sets but was added more recently than it was removed.
+
+One downside of LWW-Element-Set is that it can suffer from "rebirth" or "tombstone" problems, where an element that was previously removed and then re-added may still be considered removed if the remove timestamp is greater than the add timestamp. This can be mitigated by using a higher resolution timestamp or by implementing a garbage collection mechanism that removes old elements from the set.
 
 ### Example code
 
@@ -312,4 +350,5 @@ The payload consists of a set of pairs `(element, unique-identifier)`. A `lookup
 When a client calls `remove(e)` at some source, the set of unique tags associated with `e` at the source is recorded. Downstream, all such pairs are removed from the local payload. Thus, when `remove(e)` happens-after any number of `add(e)`, all duplicate pairs are removed, and the element is not in the set any more, as expected intuitively. When `add(e)` is concurrent with `remove(e)`, the `add` takes precedence, as the unique tag generated by `add` cannot be observed by `remove`.
 
 ## Remove-win Set
+
 Same as above but rmv() has priority over add()
