@@ -1,0 +1,53 @@
+# Templates
+
+## Overview
+
+The `templates` directory contains a set of files and directories that will be copied to the destination directory when the template is invoked.
+
+## Template Structure
+
+A Hygen template structure is as follows:
+
+```js
+/* Metadata section using Frontmatter (Frontmatter section) */
+---
+to: app/emails/<%= name %>.html
+---
+
+/* Body section using ejs */
+Hello <%= name %>,
+<%= message %>
+(version <%= version %>)
+```
+
+The frontmatter section is used to define the destination path of the file. The body section is used to define the contents of the file. The body section is rendered using the [ejs](https://ejs.co/) templating engine.
+
+The `.ejs.t` extension is used to indicate that the file is a template in Hygen.
+
+## Frontmatter
+
+The frontmatter section is used to define the destination path of the file. The frontmatter section is defined using the [YAML](https://yaml.org/) format.
+
+The frontmatter is delimited by a matching `---` top and bottom with yaml in it, where we define the template metadata.
+
+For example we have this template:
+
+```js _templates/mailer/campaign/emails.ejs.t
+---
+to: app/emails/<%= name %>.html
+---
+```
+
+When we invoke the template, we can pass in the `name` variable:
+
+```sh
+hygen mailer campaign emails --name=welcome
+```
+
+This will create a file at `app/emails/welcome.html`. And this frontmatter section will be replaced with the following:
+
+```js
+---
+to: app/emails/welcome.html
+---
+```
