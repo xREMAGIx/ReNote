@@ -11,6 +11,7 @@ At the time this doc was written, the following versions were used:
 - Yarn: @4.0.2
 - Node: @18.18.2
 - Storybook: @7.6.3
+- Hygen: @6.2.11
 
 :::
 
@@ -208,3 +209,19 @@ Next we can add the Hygen script to our `package.json` to run the generators.
   "gen:component": "hygen components new"
 },
 ```
+
+## Run
+
+Now we can run the Hygen script to create a new component.
+
+```bash
+yarn gen:component
+```
+
+We will be asked to select the level of the component and the name of the component.
+
+![Hygen select level](./img/hygenSelectLevel.png)
+
+![Hygen input name](./img/hygenInputName.png)
+
+Then we can see the component is created in the `src/components` folder.
