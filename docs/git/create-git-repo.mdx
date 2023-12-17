@@ -1,0 +1,85 @@
+# Create a Git repository
+
+## New repository
+
+### Initialize the repository
+
+```bash
+git init
+```
+
+### Add gitignore file
+
+```bash
+touch .gitignore
+```
+
+Add the following to the .gitignore file
+
+```bash
+# Ignore node_modules folder
+node_modules
+.node_modules
+```
+
+### Add all files to the repository
+
+```bash
+git add .
+```
+
+### Commit the changes
+
+```bash
+git commit -m "Initial commit"
+```
+
+## Connect to a remote repository
+
+### Create a new repository
+
+Follow the instructions to create a new repository.
+
+[GitHub create a new repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories)
+
+### Add the remote repository
+
+```bash
+git remote add origin <url>
+```
+
+### Verifty the remote repository
+
+```bash
+git remote -v
+```
+
+### Setup the upstream branch
+
+```bash
+git remote --set-upstream origin <branch-name>
+```
+
+### Push the changes to the remote repository
+
+```bash
+git push origin <branch-name>
+```
+
+## Existing repository
+
+```bash
+git clone <url>
+```
+
+### Create a new branch
+
+```bash
+git checkout -b <branch-name>
+```
+
+### Push changes to a remote repository
+
+```bash
+git push origin <branch-name>
+```

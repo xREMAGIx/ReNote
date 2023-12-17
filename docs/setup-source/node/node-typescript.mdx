@@ -1,0 +1,132 @@
+# NodeJS with Typescript
+
+This is a template for a Node project with Typescript.
+
+:::info
+
+I followed this documentation to create this template: [How to Setup a TypeScript + Node.js Project](https://khalilstemmler.com/blogs/typescript/node-starter-project/)
+
+At the time this doc was written, the following versions were used:
+
+- Yarn: @1.22.19
+- Node: @18.18.2
+
+:::
+
+## Init setup
+
+We start by creating folder for our project.
+
+```bash
+mkdir r-node-typescript
+cd r-node-typescript
+```
+
+### Setup Node package.json
+
+Then we can initialize the project with Yarn.
+
+```bash
+yarn init -y
+```
+
+### Setup Typescript as a dev dependency
+
+Then we can add Typescript to our project.
+
+```bash
+yarn add -D typescript
+```
+
+### Install ambient types
+
+We can install ambient types for Node.
+
+```bash
+yarn add -D @types/node
+```
+
+### Create tsconfig.json
+
+We can create a `tsconfig.json` file with the following command.
+
+```bash
+yarn tsc --init tsc --init --rootDir src --outDir build \
+--esModuleInterop --resolveJsonModule --lib es6 \
+--module commonjs --allowJs true --noImplicitAny true
+```
+
+You can remove unnecessary options from the `tsconfig.json` file. Our `tsconfig.json` file looks like this:
+
+```json
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["es6"],
+    "allowJs": true,
+    "outDir": "build",
+    "rootDir": "src",
+    "strict": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  }
+}
+```
+
+### Create the `src` folder and create a `index.ts` file
+
+We can create the `src` folder and create a `index.ts` file inside it.
+
+```bash
+mkdir src
+touch src/index.ts
+```
+
+### Compiling Typescript
+
+We can compile Typescript with the following command.
+
+```bash
+yarn tsc
+```
+
+## Useful configurations
+
+### Cold reloading
+
+We can install `ts-node` to run Typescript files directly.
+
+```bash
+yarn add -D ts-node
+```
+
+Then we can add `nodemon` to have hot reloading.
+
+```bash
+yarn add -D nodemon
+```
+
+Add a `nodemon.json` file with the following content.
+
+```json
+{
+  "watch": ["src"],
+  "ext": ".ts,.js",
+  "ignore": [],
+  "exec": "ts-node ./src/index.ts"
+}
+```
+
+Then we can add a script to our `package.json` file.
+
+```json
+{
+  "scripts": {
+    "start": "nodemon"
+  }
+}
+```
+
+By running `yarn start` we can start our application.
