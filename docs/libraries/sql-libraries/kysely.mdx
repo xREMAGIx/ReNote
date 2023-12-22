@@ -1,0 +1,59 @@
+# Kysely
+
+## Install
+
+```bash
+yarn add kysely
+```
+
+Depending on your database, you may also need to install one of the following:
+
+```bash
+# PostgreSQL
+yarn add pg
+
+# MySQL
+yarn add mysql2
+
+# SQLite
+yarn add sqlite3
+```
+
+## Usage
+
+```typescript title="src/db.ts"
+import { Kysely, PostgresDialect } from "kysely";
+import { Pool } from "pg";
+
+const DATABASE_URL = process.env.DATABASE_URL;
+
+export const db = new Kysely({
+  dialect: new PostgresDialect({
+    pool: new Pool({
+      connectionString: DATABASE_URL,
+    }),
+  }),
+});
+```
+
+You need to add .env file to the root of your project with the following content:
+
+```bash
+DATABASE_URL=postgres://user:password@localhost:5432/database
+```
+
+## Kysely codegen
+
+Kysely codegen is a tool for generating TypeScript types and functions for your database queries.
+
+### Install
+
+```bash
+yarn add kysely-codegen
+```
+
+### Usage
+
+```bash
+yarn run kysely-codegen --dialect postgres
+```
