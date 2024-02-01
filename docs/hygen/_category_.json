@@ -1,7 +1,7 @@
 {
     "label": "Hygen",
     "link": {
-        "description": "All about Hygen that I learned.",
+        "description": "All about Hygen that I learned. A code generator",
         "type": "generated-index"
     }
 }
